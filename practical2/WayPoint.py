@@ -3,55 +3,30 @@ import sys
 import random
 import numpy as np
 
-c = 0;
-def getRandomX():
-    return random.randint((c%10)*50, (c%10 + 1)*50)
-
-def getRandomY():
-    return random.randint((c%10)*50, (c%10 + 1)*50)
-
-def getRandomTheta(): 
-    return random.randint(0, 360)
-
-numberOfParticles = 100
-
-line1 = (10, 10, 10, 500) # (x0, y0, x1, y1)
-line2 = (20, 20, 500, 200)  # (x0, y0, x1, y1)
-
-print "drawLine:" + str(line1)
-print "drawLine:" + str(line2)
 
 
 
-def navigateToWaypoint(x,y,particles):
+def navigateToWaypoint(x,y):
     x=float(x)
     y=float(y)
     dist= np.sqrt(x**2+y**2)
-    angle = np.arctan2(x/y)+lasttheta
-    
-    #rotate angle
-    
-    
-    #turn wheels be (14.6/40) * dist
-    while True:
+    angle = np.arctan2(y,x)
+        
+    c=0
+    particles = [(0,0,angle) for i in range(0,50)]
+    while c<50:
+        c += 1
+        e=np.random.normal(0,0.01,50)
+        f=np.random.normal(0,0.01,50)
+        D=dist
     # Create a list of particles to draw. This list should be filled by tuples (x, y, theta).
-    particles = [[getRandomX(), getRandomY(), getRandomTheta()] for i in range(numberOfParticles)]
-    Currloc=reduce(lambda x,y: (np.array(x)+np.array(y))/float(numberOfParticles), particles)
-    
-    print "drawParticles:" + str(particles)
-    
-    c += 1;
-    time.sleep(0.25)
-    
-    
-    #calculate angle
-    #rotate
-    #move distance
+        for i in range(0,50):
+            particles[i]=( float(particles[i][0]+(D+e[i])*np.cos(particles[i][2])) , float(particles[i][1]+(D+e[i])*np.sin(particles[i][2]))  , float(particles[i][2]+f[i]) )
 
-while True:
-    # Create a list of particles to draw. This list should be filled by tuples (x, y, theta).
-    particles = [(getRandomX(), getRandomY(), getRandomTheta()) for i in range(numberOfParticles)]
-    print "drawParticles:" + str(particles)
+    #particles = map(lambda x: [ float(x[0]+(D+e)*np.cos(x[2])) , float( x[1]+(D+e)*np.sin(x[2]) ) , float(x[2]+f) ] for i in particles)
+        print "drawParticles:" + str(particles)
     
-    c += 1;
-    time.sleep(0.25)
+        c += 1;
+        time.sleep(0.25)
+
+navigateToWaypoint(20,15)      
